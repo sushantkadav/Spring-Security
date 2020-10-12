@@ -11,17 +11,13 @@ import javax.persistence.Id;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class User {
-
-    @Id
-    @GeneratedValue
+public class UserDTO {
     private Long id;
 
     private String username;
     private String password;
     private String emailId;
     private String mobileNo;
-    private Boolean isActive = true;
+    private Boolean isActive;
 
 }
