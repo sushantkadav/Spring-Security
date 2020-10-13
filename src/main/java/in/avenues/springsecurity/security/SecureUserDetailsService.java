@@ -2,6 +2,7 @@ package in.avenues.springsecurity.security;
 
 import in.avenues.springsecurity.user.UserDTO;
 import in.avenues.springsecurity.user.UserService;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,9 +25,7 @@ public class SecureUserDetailsService implements UserDetailsService {
            return new SecureUserDetails(userDTO);
         } catch (Exception ex) {
             ex.printStackTrace();
-            //user not found.
+            throw new BadCredentialsException("Error");
         }
-        return null;
-
     }
 }

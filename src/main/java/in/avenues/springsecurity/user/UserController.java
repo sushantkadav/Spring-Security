@@ -13,6 +13,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/test")
+    public String getTest() {
+        return "Sanity";
+    }
+
     @PostMapping
     public ResponseEntity<Boolean> createUser(@RequestBody UserDTO payload) {
         Boolean value = userService.save(payload);
@@ -30,4 +35,6 @@ public class UserController {
         UserDTO userDTO = userService.getByUserName(username);
         return ResponseEntity.ok(userDTO);
     }
+
+
 }

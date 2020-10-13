@@ -1,6 +1,7 @@
 package in.avenues.springsecurity.user;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -10,15 +11,19 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, ModelMapper modelMapper) {
+    public UserService(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Boolean save(UserDTO payload) {
         User user = new User();
+
         modelMapper.map(payload, user);
+        user.setPassword(passwordEncoder.encode(payload.getPassword()));
         User savedUser = userRepository.save(user);
         return savedUser != null ? true : false;
     }
