@@ -1,4 +1,4 @@
-package in.avenues.springsecurity.security;
+package in.avenues.springsecurity.security.models;
 
 import in.avenues.springsecurity.user.UserDTO;
 import org.springframework.security.core.GrantedAuthority;

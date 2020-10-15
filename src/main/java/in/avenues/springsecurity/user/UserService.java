@@ -1,6 +1,7 @@
 package in.avenues.springsecurity.user;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,7 @@ public class UserService {
 
     public UserDTO getByUserName(String username) {
         Optional<User> userOptional = userRepository.findUserByUsername(username);
-        return userOptional.isPresent() ? modelMapper.map(userOptional.get(), UserDTO.class) : null;
+        User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+        return modelMapper.map(user, UserDTO.class);
     }
 }

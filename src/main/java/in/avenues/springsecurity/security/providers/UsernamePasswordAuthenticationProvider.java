@@ -1,9 +1,9 @@
-package in.avenues.springsecurity.security;
+package in.avenues.springsecurity.security.providers;
 
-import in.avenues.springsecurity.user.UserDTO;
+import in.avenues.springsecurity.security.models.SecureUserDetailsService;
+import in.avenues.springsecurity.security.authentications.UsernamePasswordAuthentication;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,12 +11,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+public class UsernamePasswordAuthenticationProvider implements AuthenticationProvider {
 
     private SecureUserDetailsService userDetailsService;
     private PasswordEncoder passwordEncoder;
 
-    public CustomAuthenticationProvider(SecureUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+    public UsernamePasswordAuthenticationProvider(SecureUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
@@ -29,12 +29,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         UserDetails user = userDetailsService.loadUserByUsername(username);
         if (user != null) {
             if (passwordEncoder.matches(password, user.getPassword())) {
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        username, password, user.getAuthorities());
-                return authenticationToken;
+                return new UsernamePasswordAuthentication(username, password, user.getAuthorities());
             }else {
-                System.out.println("incorrect password");
-                throw new BadCredentialsException("Incorrect password");
+                System.out.println("incorrect user or password");
+                throw new BadCredentialsException("Incorrect user or password");
             }
         }
         throw new BadCredentialsException("Error!");
@@ -42,7 +40,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authType) {
-        return UsernamePasswordAuthenticationToken.class.equals(authType);
-
+        return UsernamePasswordAuthentication.class.equals(authType);
     }
 }

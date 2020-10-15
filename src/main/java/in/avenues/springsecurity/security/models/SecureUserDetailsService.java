@@ -1,11 +1,10 @@
-package in.avenues.springsecurity.security;
+package in.avenues.springsecurity.security.models;
 
 import in.avenues.springsecurity.user.UserDTO;
 import in.avenues.springsecurity.user.UserService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
