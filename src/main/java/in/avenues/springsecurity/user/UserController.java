@@ -1,6 +1,9 @@
 package in.avenues.springsecurity.user;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,8 +17,11 @@ public class UserController {
     }
 
     @GetMapping("/test")
+    @Async
     public String getTest() {
-        return "Sanity";
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(auth);
+        return "Sanity " + auth.getName();
     }
 
     @PostMapping

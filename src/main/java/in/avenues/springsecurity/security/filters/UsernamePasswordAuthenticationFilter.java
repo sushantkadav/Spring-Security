@@ -1,13 +1,12 @@
 package in.avenues.springsecurity.security.filters;
 
-import in.avenues.springsecurity.cognito.CognitoService;
-import in.avenues.springsecurity.security.authentications.CognitoAuthentication;
+import in.avenues.springsecurity.otp.OtpService;
+import in.avenues.springsecurity.security.authentications.OtpAuthentication;
 import in.avenues.springsecurity.security.authentications.UsernamePasswordAuthentication;
-import in.avenues.springsecurity.security.validator.TokenValidator;
+import in.avenues.springsecurity.security.util.TokenValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -23,7 +22,7 @@ public class UsernamePasswordAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
-    private CognitoService cognitoService;
+    private OtpService otpService;
     @Autowired
     private TokenValidator tokenValidator;
 
@@ -35,23 +34,25 @@ public class UsernamePasswordAuthenticationFilter extends OncePerRequestFilter {
 
         String username = request.getHeader("username");
         String password = request.getHeader("password");
-        String cognitoId = request.getHeader("cognitoId");
+        String otpCode = request.getHeader("otp-code");
 
-        if (cognitoId == null) {
+        if (otpCode == null) {
             //Step 1:
             Authentication usernamePasswordAuthentication = new UsernamePasswordAuthentication(username, password);
             Authentication authenticatedUser = authenticationManager.authenticate(usernamePasswordAuthentication);
             if (authenticatedUser.isAuthenticated()) {
-                cognitoService.generateCognitoId(username);
+                otpService.generateOtpCode(username);
             }
 
         } else {
             //Step 2:
-            Authentication cognitoAuthentication = new CognitoAuthentication(username, cognitoId);
-            Authentication authenticatedUser = authenticationManager.authenticate(cognitoAuthentication);
-            String token = String.valueOf(UUID.randomUUID());
-            tokenValidator.add(token);
-            if (authenticatedUser.isAuthenticated()) {
+            Authentication otpAuthentication = new OtpAuthentication(username, otpCode);
+            Authentication authenticatedOtp = authenticationManager.authenticate(otpAuthentication);
+
+            if (authenticatedOtp.isAuthenticated()) {
+
+                String token = String.valueOf(UUID.randomUUID());
+                tokenValidator.add(token);
                 response.setHeader("Authorization", token);
             }
         }

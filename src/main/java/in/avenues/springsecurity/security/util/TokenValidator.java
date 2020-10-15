@@ -1,4 +1,4 @@
-package in.avenues.springsecurity.security.validator;
+package in.avenues.springsecurity.security.util;
 
 import org.springframework.stereotype.Component;
 
@@ -12,6 +12,7 @@ public class TokenValidator {
     private Set<String> tokens = new HashSet();
 
     public void add(String token){
+        System.out.println(">>>> " + token);
         tokens.add(token);
     }
 
